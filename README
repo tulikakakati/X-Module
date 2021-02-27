@@ -1,0 +1,56 @@
+
+X-Module
+Tulika Kakati
+27/02/2021
+Citation
+Please use it ethically once it gets accepted in Bioinformatics, Oxford University Press.
+Testing platform:
+Machine with an Intel(R) core I5-8250U CPU@1.60Ghz 1.80 GHz processor, a 8.00 GB RAM, and a 64-bit Windows 10 operating system. R version 3.5.1
+Introduction
+X-Module is a novel fusion measure to detect mapping between modules from two sets of co-expressed modules extracted from control and disease stages of any disease dataset. Our measure considers both topological and biological information about a module and is an estimation of four parameters, namely, semantic similarity, eigengene correlation, degree difference, and the number of common genes. 
+
+Running an example:
+1.	Set the path to your current directory
+	setwd ("------/R-package")
+2.	Example Dataset
+We have considered an Example dataset with 1000 genes and 26 control and 26 disease samples. The expression profile can be found as "Example-control.csv" and "Example-disease.csv" and the genes are named as "Example-genes.csv".
+
+3.	Extraction of co-expressed modules from mRNA expression profiles using THD-Module Extractor method.
+	a.	For each of the gene expression profile in control and disease samples, the score matrices and row sum matrices are computed using getSSSim_v2.r(). Then co-expressed modules are extracted using buildMatrix_Final(). 
+	b.	For example: For control samples,
+	Example= read.csv("Example-control.csv",header=FALSE)
+	source("getSSSim_v2.r")
+      getSSSim_v2(Example)
+	The results are saved as "scoreMatrix-Example-control.csv" 	and "sumRowMatrix-Example-control.csv", respectively. 
+
+NOTE: To find the score matrix in our testing platform, it takes 30 minutes, so we recommend to use the C code /CUDA code
+(https://github.com/hkashyap/getSSSimCUDA) for computing the 	score matrix of a gene expression data. 
+	
+	c.	source("buildMatrix_Final.r")
+		buildMatrix_Final()
+
+		Parameters: 
+		State: control
+		Maximum number of modules: 5
+		Upper bound threshold: 0.95
+		Lower bound threshold: 0.35
+		Reducing factor: 0.05
+		Minimum number of mRNAs in a module: 250  
+4.	Co-expressed modules from control samples of mRNA expression profiles may be loaded as:
+	FCSSSim=load("FCSSSim-Example-control.RData"), 
+
+5.	Find interesting mRNAs from co-expressed modules and differentially co-expressed mRNAs using 
+	source("findInterestingBorderGenes.r")	findInterestingBorderGenes()
+	Parameters: 
+	State: control
+	Number of control samples: 26
+	Number of disease samples: 26
+
+Similarly, repeat for disease samples of Example expression profile.
+
+6.	Finding mapped module pairs using X-Module
+
+	source("moduleCorrespondence.r")
+	moduleCorrespondence()
+The mapped modules can be found in moduleCorrespondence_5_5.csv file.
+
